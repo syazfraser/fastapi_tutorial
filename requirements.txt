@@ -2,3 +2,5 @@ uvicorn
 fastapi~=0.63.0
 pydantic~=1.8.1
 sqlalchemy
+passlib
+bcrypt
