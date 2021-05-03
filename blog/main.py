@@ -18,7 +18,7 @@ def get_db():
         db.close()
 
 
-@app.post('/blog', status_code=status.HTTP_201_CREATED)
+@app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['Blogs'])
 def create(request: schemas.Blog, db: Session = Depends(get_db)):
     new_blog = models.Blog(title=request.title, body=request.body)
     db.add(new_blog)
@@ -27,13 +27,13 @@ def create(request: schemas.Blog, db: Session = Depends(get_db)):
     return new_blog
 
 
-@app.get('/blog', response_model=List[schemas.ShowBlog])
+@app.get('/blog', response_model=List[schemas.ShowBlog], tags=['Blogs'])
 def get_all_blogs(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
 
 
-@app.delete('/blog/{id}', status_code=status.HTTP_204_NO_CONTENT)
+@app.delete('/blog/{id}', status_code=status.HTTP_204_NO_CONTENT, tags=['Blogs'])
 def delete_blog(id, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
@@ -46,7 +46,7 @@ def delete_blog(id, db: Session = Depends(get_db)):
     return 'Done'
 
 
-@app.put('/blog/{id}', status_code=status.HTTP_202_ACCEPTED)
+@app.put('/blog/{id}', status_code=status.HTTP_202_ACCEPTED, tags=['Blogs'])
 def update_blog(id, request: schemas.Blog, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
@@ -59,7 +59,7 @@ def update_blog(id, request: schemas.Blog, db: Session = Depends(get_db)):
     return 'updated'
 
 
-@app.get('/blog/{id}', status_code=200, response_model=schemas.ShowBlog)
+@app.get('/blog/{id}', status_code=200, response_model=schemas.ShowBlog, tags=['Blogs'])
 def get_single_blog(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -73,7 +73,7 @@ def get_single_blog(id, response: Response, db: Session = Depends(get_db)):
 """USERS"""
 
 
-@app.post('/user', status_code=status.HTTP_201_CREATED)
+@app.post('/user', status_code=status.HTTP_201_CREATED, tags=['Users'])
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
     new_user = models.User(name=request.name, email=request.email, password=Hash.bcrypt(request.password))
     db.add(new_user)
@@ -84,13 +84,13 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
 
 
 
-@app.get('/user', status_code=status.HTTP_200_OK, response_model=List[schemas.ShowUser])
+@app.get('/user', status_code=status.HTTP_200_OK, response_model=List[schemas.ShowUser], tags=['Users'])
 def get_all_users(db: Session = Depends(get_db)):
     users = db.query(models.User).all()
     return users
 
 
-@app.get('/user/{id}', status_code=status.HTTP_200_OK, response_model=schemas.ShowUser)
+@app.get('/user/{id}', status_code=status.HTTP_200_OK, response_model=schemas.ShowUser, tags=['Users'])
 def get_single_user(id, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id)
     if not user.first():
@@ -101,7 +101,7 @@ def get_single_user(id, db: Session = Depends(get_db)):
     return user.first()
 
 
-@app.delete('/user/{id}')
+@app.delete('/user/{id}', tags=['Users'])
 def delete_user(id, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id)
     if not user:
@@ -114,7 +114,7 @@ def delete_user(id, db: Session = Depends(get_db)):
     return f'User {id} deleted!'
 
 
-@app.put('/user/{id}', status_code=status.HTTP_202_ACCEPTED)
+@app.put('/user/{id}', status_code=status.HTTP_202_ACCEPTED, tags=['Users'])
 def update_user(id, request: schemas.User, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id)
     if not user.first():
@@ -125,5 +125,3 @@ def update_user(id, request: schemas.User, db: Session = Depends(get_db)):
     user.update(dict(request))
     db.commit()
     return f'User {id} updated!'
-
-# # 2:23:10
