@@ -17,6 +17,9 @@ class User(BaseModel):
     password: str
 
 
-class ShowUser(User):
+class ShowUser(BaseModel):
+    name: str
+    email: str
+
     class Config:
         orm_mode = True
