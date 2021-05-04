@@ -20,7 +20,7 @@ def get_db():
 
 @app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['Blogs'])
 def create(request: schemas.Blog, db: Session = Depends(get_db)):
-    new_blog = models.Blog(title=request.title, body=request.body)
+    new_blog = models.Blog(title=request.title, body=request.body, user_id=1)
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
@@ -73,15 +73,13 @@ def get_single_blog(id, response: Response, db: Session = Depends(get_db)):
 """USERS"""
 
 
-@app.post('/user', status_code=status.HTTP_201_CREATED, tags=['Users'])
+@app.post('/user', status_code=status.HTTP_201_CREATED, tags=['Users'], response_model=schemas.ShowUser)
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
     new_user = models.User(name=request.name, email=request.email, password=Hash.bcrypt(request.password))
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
-
-
 
 
 @app.get('/user', status_code=status.HTTP_200_OK, response_model=List[schemas.ShowUser], tags=['Users'])
